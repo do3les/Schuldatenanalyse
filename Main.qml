@@ -28,7 +28,7 @@ Window {
 
         function getDBHandle(){
 
-            let db=LocalStorage.openDatabaseSync("DB","1.1","database",10000)
+            let db=LocalStorage.openDatabaseSync("DB","1.1","database",1000000)
             return db
 
 
@@ -110,13 +110,44 @@ Window {
 
 
 
+    RowLayout {
+        TextEdit {
+            id: query_input
+            width: 500
+            text: "SELECT * FROM fach"
+
+        }
+        Button {
+            text: "Run Query"
+
+            onClicked: {
+                // output_view_model.clear()
+
+                console.log("Running query: " + query_input.text)
+
+                createDB.getDBHandle().transaction(
+                    function(tx){
+                        let result = tx.executeSql(query_input.text) //Who cares about SQL injections anyways.
+
+                        for(let i = 0; i < result.rows.length; i++){
+                            output_view_model.append(
+                                {foo: result.rows.item(i).name, bar: result.rows.item(i).kuerzel}
+                            )
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+
     ListView {
         id: output_view
 
         width: parent.width
         height: 400
         x: 0
-        y: 300
+        y: 100
 
         model: ListModel {
             id: output_view_model
