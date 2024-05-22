@@ -108,43 +108,45 @@ Window {
 
     // }
 
+
+
     ListView {
-        width: 300
-        height: 200
-        x:0
-        y:100
+        id: output_view
 
+        width: parent.width
+        height: 400
+        x: 0
+        y: 300
 
-        model: ListModel{
-            id: my_Model
+        model: ListModel {
+            id: output_view_model
         }
 
         delegate: Rectangle {
-            width: 200
+            width: parent.width
             height: 20
 
             color: {
                 if(index%2==0){
-                        "grey"
-                }
-                else {
-                    "darkgrey"
+                    "lightgrey"
+                }else {
+                    "lightgreen"
                 }
             }
 
             Text {
-                width:  parent.width/2
-                id: my_delegate
-                text: salutee
+                width: parent.width / 2
+                text: foo
             }
 
             Text {
-                width:  parent.width/2
-                x: parent.width/2
-
-                text: salutation
+                width: parent.width / 2
+                x: parent.width / 2
+                text: bar
             }
+
         }
+
     }
 
 
