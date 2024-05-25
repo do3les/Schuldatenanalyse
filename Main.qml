@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.LocalStorage
 import QtQuick.Layouts
 import QtQuick.Controls
+import Qt.labs.qmlmodels
 
 Window {
     width: 1280
@@ -37,78 +38,6 @@ Window {
 
     }
 
-    // RowLayout {
-
-    //     Label {
-    //         text: "salutation"
-    //         color: "black"
-    //     }
-
-    //     TextEdit {
-    //         id: salutationText
-    //         width: 100
-    //     }
-
-    //     Label {
-    //         text: "salutee"
-    //         color: "black"
-    //     }
-
-    //     TextEdit {
-    //         id: saluteeText
-    //         width: 100
-    //     }
-
-    //     Button {
-    //         text: "insert"
-
-    //         onClicked: {
-    //             console.log("try insert")
-
-    //             let db=createDB.getDBHandle()
-    //             db.transaction(
-    //                 function(tx){
-    //                     console.log("Insert Transaction beginn...")
-    //                     tx.executeSql("INSERT INTO Greetings (salutation, salutee) VALUES ('" + salutationText.text + "','" + saluteeText.text +"' )")
-
-    //                 }
-    //             )
-    //         }
-
-    //     }
-
-    //     Button {
-    //         text: "ShowData"
-
-    //         onClicked: {
-    //             my_Model.clear()
-
-    //             console.log("show DB Data")
-
-    //             //let db=createDB.getDBHandle()
-    //             createDB.getDBHandle().transaction(
-    //                 function(tx){
-    //                     console.log("Getting Data ...")
-    //                     let result=tx.executeSql("SELECT * FROM Greetings")
-    //                     for ( let i = 0; i < result.rows.length; i++){
-    //                         console.log(result.rows.item(i).salutee)
-    //                         console.log(result.rows.item(i).salutation)
-
-    //                         my_Model.append(
-    //                             {salutee: result.rows.item(i).salutee, salutation: result.rows.item(i).salutation}
-    //                         )
-
-    //                     }
-
-    //                 }
-    //             )
-    //         }
-
-    //     }
-
-    // }
-
-
 
     RowLayout {
         TextEdit {
@@ -125,7 +54,7 @@ Window {
 
                 console.log("Running query: " + query_input.text)
 
-                createDB.getDBHandle().transaction(
+                createDB.getDBHandle().readTransaction(
                     function(tx){
                         let result = tx.executeSql(query_input.text) //Who cares about SQL injections anyways.
 
@@ -145,7 +74,7 @@ Window {
         id: output_view
 
         width: parent.width
-        height: 400
+        height: 50
         x: 0
         y: 100
 
@@ -176,6 +105,39 @@ Window {
                 text: bar
             }
 
+        }
+
+    }
+
+
+    TableView {
+        id: output_table
+
+        width: parent.width
+        height: 400
+        x: 0
+        y: 300
+
+        model: TableModel {
+            TableModelColumn { display: "foo" }
+            TableModelColumn { display: "bar" }
+
+            rows: [
+                {"foo": "1", "bar": "one"},
+                {"foo": "2", "bar": "two"},
+                {"foo": "3", "bar": "three"}
+            ]
+        }
+
+        delegate: Rectangle {
+            implicitWidth: 100
+            implicitHeight: 30
+            border.width: 1
+
+            Text {
+                text: display
+                anchors.centerIn: parent
+            }
         }
 
     }
