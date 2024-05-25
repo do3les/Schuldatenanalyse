@@ -39,110 +39,171 @@ Window {
     }
 
 
-    RowLayout {
-        TextEdit {
-            id: query_input
-            width: 500
-            text: "SELECT * FROM fach"
+
+
+    ColumnLayout {
+        id: layout_root
+        width: parent.width
+        RowLayout {
+            TextEdit {
+                id: query_input
+                width: 500
+                text: "SELECT * FROM fach"
+
+            }
+            Button {
+                text: "Run Query"
+
+                onClicked: {
+                    // output_view_model.clear()
+
+                    console.log("Running query: " + query_input.text)
+
+                    createDB.getDBHandle().readTransaction(
+                        function(tx){
+                            let result = tx.executeSql(query_input.text) //Who cares about SQL injections anyways.
+
+                            for(let i = 0; i < result.rows.length; i++){
+                                output_view_model.append(
+                                    {foo: result.rows.item(i).name, bar: result.rows.item(i).kuerzel}
+                                )
+                            }
+                        }
+                    )
+                }
+            }
+        }
+
+
+        ListView {
+            id: output_view
+
+            width: parent.width
+            height: 200
+
+
+            model: ListModel {
+                id: output_view_model
+            }
+
+            delegate: Rectangle {
+                width: parent.width
+                height: 20
+
+                color: {
+                    if(index%2==0){
+                        "lightgrey"
+                    }else {
+                        "lightgreen"
+                    }
+                }
+
+                Text {
+                    width: parent.width / 2
+                    text: foo
+                }
+
+                Text {
+                    width: parent.width / 2
+                    x: parent.width / 2
+                    text: bar
+                }
+
+            }
 
         }
-        Button {
-            text: "Run Query"
 
-            onClicked: {
-                // output_view_model.clear()
 
-                console.log("Running query: " + query_input.text)
 
-                createDB.getDBHandle().readTransaction(
-                    function(tx){
-                        let result = tx.executeSql(query_input.text) //Who cares about SQL injections anyways.
 
-                        for(let i = 0; i < result.rows.length; i++){
-                            output_view_model.append(
-                                {foo: result.rows.item(i).name, bar: result.rows.item(i).kuerzel}
-                            )
-                        }
-                    }
-                )
+        TableView {
+            id: output_table
+
+            width: parent.width
+            height: 400
+
+
+            model: TableModel {
+                TableModelColumn { display: "foo" }
+                TableModelColumn { display: "bar" }
+
+                rows: [
+                    {"foo": "1", "bar": "one"},
+                    {"foo": "2", "bar": "two"},
+                    {"foo": "3", "bar": "three"}
+                ]
             }
+
+            delegate: Rectangle {
+                implicitWidth: 100
+                implicitHeight: 30
+                border.width: 1
+
+                Text {
+                    text: display
+                    anchors.centerIn: parent
+                }
+
+
+            }
+
+        }
+
+        RowLayout {
+            Button {
+                id: dynTableCreator
+                text: "New Table"
+                onClicked: {
+                    const newTable = Qt.createQmlObject('
+import QtQuick
+import Qt.labs.qmlmodels
+
+TableView {
+    id: dynamic_table
+    width: parent.width
+    height: 200
+
+    model: TableModel {
+        id: dynamic_model
+        TableModelColumn { display: "alpha" }
+        TableModelColumn { display: "bravo" }
+
+        rows: [
+            {"alpha": "test", "bravo": "hi wrld!"},
+            {"alpha": "number 2", "bravo": "hello again!"}
+        ]
+    }
+    delegate: Rectangle {
+        id: dynamic_delegate
+        implicitWidth: 100
+        implicitHeight: 30
+        border.width: 1
+
+        Text {
+            text: display
+            anchors.centerIn: parent
         }
     }
 
-
-    ListView {
-        id: output_view
-
-        width: parent.width
-        height: 50
-        x: 0
-        y: 100
-
-        model: ListModel {
-            id: output_view_model
-        }
-
-        delegate: Rectangle {
-            width: parent.width
-            height: 20
-
-            color: {
-                if(index%2==0){
-                    "lightgrey"
-                }else {
-                    "lightgreen"
+}
+', layout_root, "myDynamicTable");
+                    console.log("Created new Table");
+                    // newTable.destroy(3000);
                 }
             }
 
-            Text {
-                width: parent.width / 2
-                text: foo
-            }
+            Button {
+                text: "Remove dynamic table"
 
-            Text {
-                width: parent.width / 2
-                x: parent.width / 2
-                text: bar
+                onClicked: {
+
+                    console.log("Destroyed table (WIP)")
+                }
             }
 
         }
 
     }
-
-
-    TableView {
-        id: output_table
-
-        width: parent.width
-        height: 400
-        x: 0
-        y: 300
-
-        model: TableModel {
-            TableModelColumn { display: "foo" }
-            TableModelColumn { display: "bar" }
-
-            rows: [
-                {"foo": "1", "bar": "one"},
-                {"foo": "2", "bar": "two"},
-                {"foo": "3", "bar": "three"}
-            ]
-        }
-
-        delegate: Rectangle {
-            implicitWidth: 100
-            implicitHeight: 30
-            border.width: 1
-
-            Text {
-                text: display
-                anchors.centerIn: parent
-            }
-        }
-
-    }
-
-
 
 
     // Component.onCompleted:{
