@@ -119,6 +119,7 @@ Window {
                             output_view_model.append(
                                     result.rows.item(i)
                             )
+                            console.log(result.rows.item(i))
                         }
                     }
                 )
@@ -133,7 +134,7 @@ Window {
                 ListElement {name: "-"; query: ""}
 
                 ListElement {name: "a)"; query: "SELECT rufname AS col0, familienname AS col1 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND klasse.name = '5b'"}
-                ListElement {name: "b)"; query: "SELECT count(*) AS col0 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND klasse.name = '7a'"}
+                ListElement {name: "b)"; query: "SELECT CAST(count(*) AS text) AS col0 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND klasse.name = '7a'"}
                 ListElement {name: "c)"; query: "SELECT klasse.name AS col0 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND schuelerin.familienname = 'Russell' AND schuelerin.rufname = 'Kimberly'"}
                 ListElement {name: "d)"; query: "SELECT rufname AS col0, familienname AS col1 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND klasse.name = '9b' AND schuelerin.ist_klassensprecher = 1"}
                 ListElement {name: "e)"; query: "SELECT rufname AS col0, familienname AS col1 FROM lehrkraft, lehrbefähigung, fach WHERE fach.name = 'Mathematik' AND lehrbefaehigung.fach_id = fach.id AND lehrbefaehigung.lehrkraft_id = lehrkraft.id"}
@@ -142,7 +143,7 @@ Window {
                 ListElement {name: "h)"; query: "SELECT wert AS col0 FROM schuelerin, note, fach WHERE fach.name = 'Englisch' AND schuelerin.rufname = 'Jason' AND schuelerin.familienname = 'Carpenter' AND note.schueler_id = schuelerin.id AND note.fach_id = fach.id"}
                 ListElement {name: "i)"; query: "SELECT rufname AS col0, familienname AS col1, wert AS col2 FROM schuelerin, pruefung, note, klasse, fach WHERE pruefung.klasse = klasse.id AND pruefung.fach_id = fach.id AND note.pruefung_id = pruefung.id AND note.schueler_id = schuelerin.id AND fach.name = 'Biologie' AND klasse.name = '8b' AND pruefung.laufende_nr = 2"}
                 // ListElement {name: "j)"; query: ""} j) fehlt?
-                ListElement {name: "k)"; query: "SELECT avg(wert) AS col0 FROM schuelerin, pruefung, note, klasse, fach WHERE pruefung.klasse = klasse.id AND pruefung.fach_id = fach.id AND note.pruefung_id = pruefung.id AND note.schueler_id = schuelerin.id AND fach.name = 'Biologie' AND klasse.name = '8b' AND pruefung.laufende_nr = 2"}
+                ListElement {name: "k)"; query: "SELECT CAST(avg(wert) AS text) AS col0 FROM schuelerin, pruefung, note, klasse, fach WHERE pruefung.klasse = klasse.id AND pruefung.fach_id = fach.id AND note.pruefung_id = pruefung.id AND note.schueler_id = schuelerin.id AND fach.name = 'Biologie' AND klasse.name = '8b' AND pruefung.laufende_nr = 2"}
             }
 
             textRole: "name"
