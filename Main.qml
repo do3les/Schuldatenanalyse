@@ -100,11 +100,12 @@ Window {
                 height: parent.height
                 id: query_input
                 width: parent.width
-                text: "SELECT name AS col0, kuerzel AS col1 FROM fach"
+                text: "SELECT rufname AS col0, familienname AS col1, CAST(geburtsdatum AS text) AS col2 FROM lehrkraft"
             }
         }
         Button {
             text: "Run Query"
+            id: query_button
 
             onClicked: {
                 output_view_model.clear()
@@ -137,10 +138,10 @@ Window {
                 ListElement {name: "b)"; query: "SELECT CAST(count(*) AS text) AS col0 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND klasse.name = '7a'"}
                 ListElement {name: "c)"; query: "SELECT klasse.name AS col0 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND schuelerin.familienname = 'Russell' AND schuelerin.rufname = 'Kimberly'"}
                 ListElement {name: "d)"; query: "SELECT rufname AS col0, familienname AS col1 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND klasse.name = '9b' AND schuelerin.ist_klassensprecher = 1"}
-                ListElement {name: "e)"; query: "SELECT rufname AS col0, familienname AS col1 FROM lehrkraft, lehrbefähigung, fach WHERE fach.name = 'Mathematik' AND lehrbefaehigung.fach_id = fach.id AND lehrbefaehigung.lehrkraft_id = lehrkraft.id"}
+                ListElement {name: "e)"; query: "SELECT rufname AS col0, familienname AS col1 FROM lehrkraft, lehrbefaehigung, fach WHERE fach.name = 'Mathematik' AND lehrbefaehigung.fach_id = fach.id AND lehrbefaehigung.lehrkraft_id = lehrkraft.id"}
                 ListElement {name: "f)"; query: "SELECT DISTINCT rufname AS col0, familienname AS col1 FROM lehrkraft, unterrichtet, klasse WHERE klasse.name = '6a' AND unterrichtet.klasse_id = klasse.id AND unterrichtet.lehrkraft_id = lehrkraft.id"}
                 ListElement {name: "g)"; query: "SELECT rufname AS col0, familienname AS col1, fach.name AS col2 FROM lehrkraft, unterrichtet, klasse, fach WHERE unterrichtet.lehrkraft_id = lehrkraft.id AND unterrichtet.klasse_id = klasse.id AND unterrichtet.fach_id = fach.id AND klasse.name = '6a'"}
-                ListElement {name: "h)"; query: "SELECT wert AS col0 FROM schuelerin, note, fach WHERE fach.name = 'Englisch' AND schuelerin.rufname = 'Jason' AND schuelerin.familienname = 'Carpenter' AND note.schueler_id = schuelerin.id AND note.fach_id = fach.id"}
+                ListElement {name: "h)"; query: "SELECT CAST(wert AS text) AS col0 FROM schuelerin, note, fach WHERE fach.name = 'Englisch' AND schuelerin.rufname = 'Jason' AND schuelerin.familienname = 'Carpenter' AND note.schueler_id = schuelerin.id AND note.fach_id = fach.id"}
                 ListElement {name: "i)"; query: "SELECT rufname AS col0, familienname AS col1, wert AS col2 FROM schuelerin, pruefung, note, klasse, fach WHERE pruefung.klasse = klasse.id AND pruefung.fach_id = fach.id AND note.pruefung_id = pruefung.id AND note.schueler_id = schuelerin.id AND fach.name = 'Biologie' AND klasse.name = '8b' AND pruefung.laufende_nr = 2"}
                 // ListElement {name: "j)"; query: ""} j) fehlt?
                 ListElement {name: "k)"; query: "SELECT CAST(avg(wert) AS text) AS col0 FROM schuelerin, pruefung, note, klasse, fach WHERE pruefung.klasse = klasse.id AND pruefung.fach_id = fach.id AND note.pruefung_id = pruefung.id AND note.schueler_id = schuelerin.id AND fach.name = 'Biologie' AND klasse.name = '8b' AND pruefung.laufende_nr = 2"}
@@ -289,9 +290,9 @@ Window {
     }
 
 
-    // Component.onCompleted:{
-
-    //     createDB.create()
-    // }
+    Component.onCompleted:{
+        query_button.clicked()
+        // createDB.create()
+    }
 
 }
