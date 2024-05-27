@@ -49,6 +49,13 @@ import Qt.labs.qmlmodels
     Ich hatte am Anfang die Aufgaben nur überflogen, und es sah so aus, als würde ich viele verschiedene Ausgabeformate brauchen, daher die dynamischen Tabellen.
 
 
+    So wies jetzt gelöst ist, werden mit SELECT AS die Ausgaben der Queries immer so formatiert, dass die Spalten col0, col1 und col2 genannt werden. So kann man unabhängig von der Query
+    die Daten in der ListView zeigen.
+    Allerdings gibt es ein durch QML entstehendes Problem: Wenn man eine Spalte in einem ListModel zum ersten mal mit Daten füllt, dann (nach dem was ich sehen kann) bleibt sie für immer bei dem
+    Datentyp. Das bedeutet, dass wenn z.B. die erste Query, die man laufen lässt, in col0 nur Zahlen ausgibt, dann wird bei weiteren Queries col0 nur Zahlen akzeptieren, und sonst leer bleiben.
+    Um dem vorzubeugen werden zwei Sachen gemacht: Erstens wird die Ausgabe mit CAST immer zu einem Text geändert (standardmäßig sind die meisten Daten in der Datenbank vom Typ varchar, das funktioniert auch).
+    Zweitens wird am Anfang eine Query laufen gelassen, die alle Spalten benötigt, denn sonst wird meist col2 (die oft ungenutzt bleibt) als undefined 'initialisiert', und nimmt gar keine Werte an.
+
 */
 
 Window {
