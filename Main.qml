@@ -102,11 +102,13 @@ Window {
         Rectangle {
             width: parent.width
             border.width: 1
-            height: 30
+            height: 80
             TextEdit {
                 height: parent.height
                 id: query_input
                 width: parent.width
+
+                wrapMode: TextEdit.WordWrap
                 text: "SELECT rufname AS col0, familienname AS col1, CAST(geburtsdatum AS text) AS col2 FROM lehrkraft"
             }
         }
@@ -139,24 +141,65 @@ Window {
 
             model: ListModel {
                 id: aufgabenSelectorModel
-                ListElement {name: "-"; query: ""}
+                ListElement {name: "-"; query: ""; aufgabe: ""}
 
-                ListElement {name: "a)"; query: "SELECT rufname AS col0, familienname AS col1 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND klasse.name = '5b'"}
-                ListElement {name: "b)"; query: "SELECT CAST(count(*) AS text) AS col0 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND klasse.name = '7a'"}
-                ListElement {name: "c)"; query: "SELECT klasse.name AS col0 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND schuelerin.familienname = 'Russell' AND schuelerin.rufname = 'Kimberly'"}
-                ListElement {name: "d)"; query: "SELECT rufname AS col0, familienname AS col1 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND klasse.name = '9b' AND schuelerin.ist_klassensprecher = 1"}
-                ListElement {name: "e)"; query: "SELECT rufname AS col0, familienname AS col1 FROM lehrkraft, lehrbefaehigung, fach WHERE fach.name = 'Mathematik' AND lehrbefaehigung.fach_id = fach.id AND lehrbefaehigung.lehrkraft_id = lehrkraft.id"}
-                ListElement {name: "f)"; query: "SELECT DISTINCT rufname AS col0, familienname AS col1 FROM lehrkraft, unterrichtet, klasse WHERE klasse.name = '6a' AND unterrichtet.klasse_id = klasse.id AND unterrichtet.lehrkraft_id = lehrkraft.id"}
-                ListElement {name: "g)"; query: "SELECT rufname AS col0, familienname AS col1, fach.name AS col2 FROM lehrkraft, unterrichtet, klasse, fach WHERE unterrichtet.lehrkraft_id = lehrkraft.id AND unterrichtet.klasse_id = klasse.id AND unterrichtet.fach_id = fach.id AND klasse.name = '6a'"}
-                ListElement {name: "h)"; query: "SELECT CAST(wert AS text) AS col0 FROM schuelerin, note, fach WHERE fach.name = 'Englisch' AND schuelerin.rufname = 'Jason' AND schuelerin.familienname = 'Carpenter' AND note.schueler_id = schuelerin.id AND note.fach_id = fach.id"}
-                ListElement {name: "i)"; query: "SELECT rufname AS col0, familienname AS col1, wert AS col2 FROM schuelerin, pruefung, note, klasse, fach WHERE pruefung.klasse = klasse.id AND pruefung.fach_id = fach.id AND note.pruefung_id = pruefung.id AND note.schueler_id = schuelerin.id AND fach.name = 'Biologie' AND klasse.name = '8b' AND pruefung.laufende_nr = 2"}
-                // ListElement {name: "j)"; query: ""} j) fehlt?
-                ListElement {name: "k)"; query: "SELECT CAST(avg(wert) AS text) AS col0 FROM schuelerin, pruefung, note, klasse, fach WHERE pruefung.klasse = klasse.id AND pruefung.fach_id = fach.id AND note.pruefung_id = pruefung.id AND note.schueler_id = schuelerin.id AND fach.name = 'Biologie' AND klasse.name = '8b' AND pruefung.laufende_nr = 2"}
+                ListElement {name: "a)";
+                    query: "SELECT rufname AS col0, familienname AS col1 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND klasse.name = '5b'";
+                    aufgabe: "a) Gesucht ist eine Namensliste (Rufname und Familiennamen) aller Schüler/innen in der Klasse 5b."}
+                ListElement {name: "b)";
+                    query: "SELECT CAST(count(*) AS text) AS col0 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND klasse.name = '7a'";
+                    aufgabe: "b) Wie viele Schüler/innen besuchen die Klasse 7a?"}
+                ListElement {name: "c)";
+                    query: "SELECT klasse.name AS col0 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND schuelerin.familienname = 'Russell' AND schuelerin.rufname = 'Kimberly'";
+                    aufgabe: "c) In welche Klasse geht die Schülerin Kimberly Russell?"}
+                ListElement {name: "d)";
+                    query: "SELECT rufname AS col0, familienname AS col1 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND klasse.name = '9b' AND schuelerin.ist_klassensprecher = 1";
+                    aufgabe: "d) Welche Schülerin/welcher Schüler ist Klassensprecher/in in der Klasse 9b?"}
+                ListElement {name: "e)";
+                    query: "SELECT rufname AS col0, familienname AS col1 FROM lehrkraft, lehrbefaehigung, fach WHERE fach.name = 'Mathematik' AND lehrbefaehigung.fach_id = fach.id AND lehrbefaehigung.lehrkraft_id = lehrkraft.id";
+                    aufgabe: "e) Welche Lehrkräfte haben Lehrbefähigung für das Fach Mathematik?"}
+                ListElement {name: "f)";
+                    query: "SELECT DISTINCT rufname AS col0, familienname AS col1 FROM lehrkraft, unterrichtet, klasse WHERE klasse.name = '6a' AND unterrichtet.klasse_id = klasse.id AND unterrichtet.lehrkraft_id = lehrkraft.id";
+                    aufgabe: "f) Welche Lehrkräfte (Rufname, Familienname) unterrichten die Klasse 6a?"}
+                ListElement {name: "g)";
+                    query: "SELECT rufname AS col0, familienname AS col1, fach.name AS col2 FROM lehrkraft, unterrichtet, klasse, fach WHERE unterrichtet.lehrkraft_id = lehrkraft.id AND unterrichtet.klasse_id = klasse.id AND unterrichtet.fach_id = fach.id AND klasse.name = '6a'";
+                    aufgabe: "g) Ergänze die Liste aus f) um das jeweils unterrichtete Fach."}
+                ListElement {name: "h)";
+                    query: "SELECT CAST(wert AS text) AS col0 FROM schuelerin, note, fach WHERE fach.name = 'Englisch' AND schuelerin.rufname = 'Jason' AND schuelerin.familienname = 'Carpenter' AND note.schueler_id = schuelerin.id AND note.fach_id = fach.id";
+                    aufgabe: "h) Welche Noten hat der Schüler Jason Carpenter im Fach Englisch erzielt?"}
+                ListElement {name: "i)";
+                    query: "SELECT rufname AS col0, familienname AS col1, wert AS col2 FROM schuelerin, pruefung, note, klasse, fach WHERE pruefung.klasse = klasse.id AND pruefung.fach_id = fach.id AND note.pruefung_id = pruefung.id AND note.schueler_id = schuelerin.id AND fach.name = 'Biologie' AND klasse.name = '8b' AND pruefung.laufende_nr = 2";
+                    aufgabe: "i) Erstelle eine Notenliste (Rufname, Familienname, Note) für die 2. Ex im Fach Biologie in der Klasse 8b."}
+                // j) fehlt?
+                ListElement {name: "k)";
+                    query: "SELECT CAST(avg(wert) AS text) AS col0 FROM schuelerin, pruefung, note, klasse, fach WHERE pruefung.klasse = klasse.id AND pruefung.fach_id = fach.id AND note.pruefung_id = pruefung.id AND note.schueler_id = schuelerin.id AND fach.name = 'Biologie' AND klasse.name = '8b' AND pruefung.laufende_nr = 2";
+                    aufgabe: "k) Bestimme den Notendurchschnitt der unter i) genannten Ex."}
             }
 
             textRole: "name"
 
-            onCurrentIndexChanged: query_input.text = aufgabenSelectorModel.get(currentIndex).query
+            onCurrentIndexChanged: {
+                query_input.text = aufgabenSelectorModel.get(currentIndex).query
+                aufgabenstellung.text = aufgabenSelectorModel.get(currentIndex).aufgabe
+
+                query_button.clicked()
+            }
+        }
+
+
+        Rectangle {
+            width: parent.width
+            height: 60
+            border.width: 1
+
+            Text {
+                width: parent.width
+                height: 60
+                id: aufgabenstellung
+
+                wrapMode: Wrap
+                text: "-"
+            }
         }
 
 
