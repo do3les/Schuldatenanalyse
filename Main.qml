@@ -65,35 +65,14 @@ Window {
     title: qsTr("Schuldatenanalysetool")
 
     Item{
-
-        id: createDB
-
-        function create(){
-            console.log("----- ERROR ----- \n Creating database. THIS SHOULD NEVER HAPPEN, THE DATABASE SHOULD BE GIVEN!")
-            let db=LocalStorage.openDatabaseSync("DB","1.1","database",10000)
-
-            db.transaction(
-                function(tx){
-                    tx.executeSql('CREATE TABLE IF NOT EXISTS Greetings(salutation TEXT, salutee TEXT)')
-                }
-
-            )
-
-        }
+        id: dbHandler
 
         function getDBHandle(){
 
             let db=LocalStorage.openDatabaseSync("DB","1.1","database",1000000)
             return db
-
-
         }
-
-
     }
-
-
-
 
     ColumnLayout {
         id: layout_root
@@ -121,7 +100,7 @@ Window {
 
                 console.log("Running query: " + query_input.text)
 
-                createDB.getDBHandle().readTransaction(
+                dbHandler.getDBHandle().readTransaction(
                     function(tx){
                         let result = tx.executeSql(query_input.text) //Who cares about SQL injections anyways.
 
@@ -339,10 +318,7 @@ Window {
 
     }
 
-
     Component.onCompleted:{
         query_button.clicked()
-        // createDB.create()
     }
-
 }
