@@ -4,6 +4,53 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import Qt.labs.qmlmodels
 
+/*
+  Project Goals:
+
+  + Aufgaben:
+
+    a) Gesucht ist eine Namensliste (Rufname und Familiennamen) aller Schüler/innen in der Klasse 5b.
+    b) Wie viele Schüler/innen besuchen die Klasse 7a?
+    c) In welche Klasse geht die Schülerin Kimberly Russell?
+    d) Welche Schülerin/welcher Schüler ist Klassensprecher/in in der Klasse 9b?
+    e) Welche Lehrkräfte haben Lehrbefähigung für das Fach Mathematik?
+    f) Welche Lehrkräfte (Rufname, Familienname) unterrichten die Klasse 6a?
+    g) Ergänze die Liste aus f) um das jeweils unterrichtete Fach.
+    h) Welche Noten hat der Schüler Jason Carpenter im Fach Englisch erzielt?
+    i) Erstelle eine Notenliste (Rufname, Familienname, Note) für die 2. Ex im Fach Biologie in der Klasse 8b.
+    k) Bestimme den Notendurchschnitt der unter i) genannten Ex.
+
+
+  + Antworten darstellen:
+
+    a) Liste mit zwei Spalten
+    b) int (string)
+    c) string
+    d) string oder Liste mit zwei Spalten
+    e) Liste mit zwei Spalten
+    f) Liste mit zwei Spalten
+    g) Liste mit drei Spalten
+    h) int (string)
+    i) Liste mit drei Spalten
+    k) float (string)
+
+
+
+
+
+    Anfangsidee war, QSqlQueryModel zu nutzen. Das aus C++ in QML nutzbar zu machen ist mit meinen C++ kentnissen nicht zu schaffen.
+        Hier (https://wiki.qt.io/How_to_Use_a_QSqlQueryModel_in_QML) wird die Vorgehensweise beschrieben, und hier (https://gist.github.com/cckwes/18011569ae8440e91119)
+        noch etwas praktischer umgesetzt, aber keines von beiden ließ sich auch nach längerem debugging bei mir zum laufen bringen. Ich glaube beide sind für Qt3 oder Qt4 ausgelegt.
+
+    Danach hatte ich die Idee, stattdessen mit JS ein TableModel dynamisch zu erstellen, indem ich abfrage, welche Spalten gebraucht werden, und die in den String zum erstellen einfüge.
+    Das würde glaube ich sogar gut funktionieren. Der Code für ein per String erstelltes TableView mit TableModel ist unten noch auskommentiert vorhanden.
+
+    Eigentlich hätte ich erstmal die Aufgaben komplett durchlesen sollen. Hier reicht es, wenn ich eine Liste mit drei Spalten erstelle, und möglicherweise nur Teile davon nutze.
+    Ich hatte am Anfang die Aufgaben nur überflogen, und es sah so aus, als würde ich viele verschiedene Ausgabeformate brauchen, daher die dynamischen Tabellen.
+
+
+*/
+
 Window {
     width: 1280
     height: 960
@@ -116,92 +163,92 @@ Window {
 
 
 
-        TableView {
-            id: output_table
+//         TableView {
+//             id: output_table
 
-            width: parent.width
-            height: 400
-
-
-            model: TableModel {
-                TableModelColumn { display: "foo" }
-                TableModelColumn { display: "bar" }
-
-                rows: [
-                    {"foo": "1", "bar": "one"},
-                    {"foo": "2", "bar": "two"},
-                    {"foo": "3", "bar": "three"}
-                ]
-            }
-
-            delegate: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 30
-                border.width: 1
-
-                Text {
-                    text: display
-                    anchors.centerIn: parent
-                }
+//             width: parent.width
+//             height: 400
 
 
-            }
+//             model: TableModel {
+//                 TableModelColumn { display: "foo" }
+//                 TableModelColumn { display: "bar" }
 
-        }
+//                 rows: [
+//                     {"foo": "1", "bar": "one"},
+//                     {"foo": "2", "bar": "two"},
+//                     {"foo": "3", "bar": "three"}
+//                 ]
+//             }
 
-        RowLayout {
-            Button {
-                id: dynTableCreator
-                text: "New Table"
-                onClicked: {
-                    const newTable = Qt.createQmlObject('
-import QtQuick
-import Qt.labs.qmlmodels
+//             delegate: Rectangle {
+//                 implicitWidth: 100
+//                 implicitHeight: 30
+//                 border.width: 1
 
-TableView {
-    id: dynamic_table
-    width: parent.width
-    height: 200
+//                 Text {
+//                     text: display
+//                     anchors.centerIn: parent
+//                 }
 
-    model: TableModel {
-        id: dynamic_model
-        TableModelColumn { display: "alpha" }
-        TableModelColumn { display: "bravo" }
 
-        rows: [
-            {"alpha": "test", "bravo": "hi wrld!"},
-            {"alpha": "number 2", "bravo": "hello again!"}
-        ]
-    }
-    delegate: Rectangle {
-        id: dynamic_delegate
-        implicitWidth: 100
-        implicitHeight: 30
-        border.width: 1
+//             }
 
-        Text {
-            text: display
-            anchors.centerIn: parent
-        }
-    }
+//         }
 
-}
-', layout_root, "myDynamicTable");
-                    console.log("Created new Table");
-                    // newTable.destroy(3000);
-                }
-            }
+//         RowLayout {
+//             Button {
+//                 id: dynTableCreator
+//                 text: "New Table"
+//                 onClicked: {
+//                     const newTable = Qt.createQmlObject('
+// import QtQuick
+// import Qt.labs.qmlmodels
 
-            Button {
-                text: "Remove dynamic table"
+// TableView {
+//     id: dynamic_table
+//     width: parent.width
+//     height: 200
 
-                onClicked: {
+//     model: TableModel {
+//         id: dynamic_model
+//         TableModelColumn { display: "alpha" }
+//         TableModelColumn { display: "bravo" }
 
-                    console.log("Destroyed table (WIP)")
-                }
-            }
+//         rows: [
+//             {"alpha": "test", "bravo": "hi wrld!"},
+//             {"alpha": "number 2", "bravo": "hello again!"}
+//         ]
+//     }
+//     delegate: Rectangle {
+//         id: dynamic_delegate
+//         implicitWidth: 100
+//         implicitHeight: 30
+//         border.width: 1
 
-        }
+//         Text {
+//             text: display
+//             anchors.centerIn: parent
+//         }
+//     }
+
+// }
+// ', layout_root, "myDynamicTable");
+//                     console.log("Created new Table");
+//                     // newTable.destroy(3000);
+//                 }
+//             }
+
+//             Button {
+//                 text: "Remove dynamic table"
+
+//                 onClicked: {
+//                     //Hat nicht funktioniert.
+//                     console.log("Destroyed table (WIP)")
+//                 }
+//             }
+
+//         }
 
     }
 
