@@ -91,34 +91,63 @@ Window {
     ColumnLayout {
         id: layout_root
         width: parent.width
-        RowLayout {
+
+        Rectangle {
+            width: parent.width
+            border.width: 1
+            height: 30
             TextEdit {
+                height: parent.height
                 id: query_input
-                width: 500
-                text: "SELECT * FROM fach"
-
+                width: parent.width
+                text: "SELECT name AS col0, kuerzel AS col1 FROM fach"
             }
-            Button {
-                text: "Run Query"
+        }
+        Button {
+            text: "Run Query"
 
-                onClicked: {
-                    // output_view_model.clear()
+            onClicked: {
+                output_view_model.clear()
 
-                    console.log("Running query: " + query_input.text)
+                console.log("Running query: " + query_input.text)
 
-                    createDB.getDBHandle().readTransaction(
-                        function(tx){
-                            let result = tx.executeSql(query_input.text) //Who cares about SQL injections anyways.
+                createDB.getDBHandle().readTransaction(
+                    function(tx){
+                        let result = tx.executeSql(query_input.text) //Who cares about SQL injections anyways.
 
-                            for(let i = 0; i < result.rows.length; i++){
-                                output_view_model.append(
-                                    {foo: result.rows.item(i).name, bar: result.rows.item(i).kuerzel}
-                                )
-                            }
+                        for(let i = 0; i < result.rows.length; i++){
+                            output_view_model.append(
+                                    result.rows.item(i)
+                            )
                         }
-                    )
-                }
+                    }
+                )
             }
+        }
+        ComboBox {
+            id: aufgabenSelector
+            currentIndex: 0
+
+            model: ListModel {
+                id: aufgabenSelectorModel
+                ListElement {name: "-"; query: ""}
+
+                ListElement {name: "a)"; query: "SELECT rufname AS col0, familienname AS col1 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND klasse.name = '5b'"}
+                ListElement {name: "b)"; query: "SELECT count(*) AS col0 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND klasse.name = '7a'"}
+                ListElement {name: "c)"; query: "SELECT klasse.name AS col0 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND schuelerin.familienname = 'Russell' AND schuelerin.rufname = 'Kimberly'"}
+                ListElement {name: "d)"; query: "SELECT rufname AS col0, familienname AS col1 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND klasse.name = '9b' AND schuelerin.ist_klassensprecher = 1"}
+                ListElement {name: "e)"; query: "SELECT rufname AS col0, familienname AS col1 FROM lehrkraft, lehrbefähigung, fach WHERE fach.name = 'Mathematik' AND lehrbefaehigung.fach_id = fach.id AND lehrbefaehigung.lehrkraft_id = lehrkraft.id"}
+                ListElement {name: "f)"; query: "SELECT DISTINCT rufname AS col0, familienname AS col1 FROM lehrkraft, unterrichtet, klasse WHERE klasse.name = '6a' AND unterrichtet.klasse_id = klasse.id AND unterrichtet.lehrkraft_id = lehrkraft.id"}
+                ListElement {name: "g)"; query: "SELECT rufname AS col0, familienname AS col1, fach.name AS col2 FROM lehrkraft, unterrichtet, klasse, fach WHERE unterrichtet.lehrkraft_id = lehrkraft.id AND unterrichtet.klasse_id = klasse.id AND unterrichtet.fach_id = fach.id AND klasse.name = '6a'"}
+                ListElement {name: "h)"; query: "SELECT wert AS col0 FROM schuelerin, note, fach WHERE fach.name = 'Englisch' AND schuelerin.rufname = 'Jason' AND schuelerin.familienname = 'Carpenter' AND note.schueler_id = schuelerin.id AND note.fach_id = fach.id"}
+                ListElement {name: "i)"; query: "SELECT rufname AS col0, familienname AS col1, wert AS col2 FROM schuelerin, pruefung, note, klasse, fach WHERE pruefung.klasse = klasse.id AND pruefung.fach_id = fach.id AND note.pruefung_id = pruefung.id AND note.schueler_id = schuelerin.id AND fach.name = 'Biologie' AND klasse.name = '8b' AND pruefung.laufende_nr = 2"}
+                // ListElement {name: "j)"; query: ""} j) fehlt?
+                ListElement {name: "k)"; query: "SELECT avg(wert) AS col0 FROM schuelerin, pruefung, note, klasse, fach WHERE pruefung.klasse = klasse.id AND pruefung.fach_id = fach.id AND note.pruefung_id = pruefung.id AND note.schueler_id = schuelerin.id AND fach.name = 'Biologie' AND klasse.name = '8b' AND pruefung.laufende_nr = 2"}
+            }
+
+            textRole: "name"
+
+            onCurrentIndexChanged: query_input.text = aufgabenSelectorModel.get(currentIndex).query
         }
 
 
@@ -146,14 +175,20 @@ Window {
                 }
 
                 Text {
-                    width: parent.width / 2
-                    text: foo
+                    width: parent.width / 3
+                    text: col0
                 }
 
                 Text {
-                    width: parent.width / 2
-                    x: parent.width / 2
-                    text: bar
+                    width: parent.width / 3
+                    x: parent.width / 3
+                    text: col1
+                }
+
+                Text {
+                    width: parent.width / 3
+                    x: 2 * parent.width / 3
+                    text: col2
                 }
 
             }
