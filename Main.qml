@@ -80,6 +80,29 @@ Window {
 
         Rectangle {
             width: parent.width
+            height: 120
+            border.width: 1
+
+            Text {
+                width: parent.width
+                height: parent.height
+                wrapMode: Text.Wrap
+
+                text: {
+                    "Alle Queries dürfen maximal drei Spalten ausgeben. Diese müssen 'col0', 'col1' und 'col2' genannt sein, und dürfen nur text, bzw. varchar enthalten. \n" +
+                    "Spalten kann man mit AS umbennenen, und Datentypen lassen sich mit CAST(col AS text) verändern. Queries sind read-only. \n" +
+                    "D.h. aus 'SELECT jahrgangsstufe, name FROM klasse' wird \n" +
+                    "'SELECT CAST(jahrgangsstufe AS text) AS col0, name AS col1 FROM klasse' \n" +
+                    "\n" +
+                    "Queries sind read-only. Mit der Aufgabenauswahl wird die Query für die ausgewählte Aufgabe automatisch ausgeführt."
+                }
+            }
+        }
+
+
+
+        Rectangle {
+            width: parent.width
             border.width: 1
             height: 80
             TextEdit {
@@ -173,10 +196,10 @@ Window {
 
             Text {
                 width: parent.width
-                height: 60
+                height: parent.height
                 id: aufgabenstellung
 
-                wrapMode: Wrap
+                wrapMode: Text.Wrap
                 text: "-"
             }
         }
