@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    engine.setOfflineStoragePath("..");
+    engine.setOfflineStoragePath("../..");
     qDebug() << engine.offlineStorageDatabaseFilePath("DB");
 
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed,
