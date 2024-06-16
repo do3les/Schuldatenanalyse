@@ -155,7 +155,7 @@ Window {
 
                 model: ListModel {
                     id: aufgabenSelectorModel
-                    ListElement {name: "-"; query: ""; aufgabe: ""}
+                    ListElement {name: "-"; query: ""; aufgabe: "-"}
 
                     ListElement {name: "a)";
                         query: "SELECT rufname AS col0, familienname AS col1 FROM schuelerin, klasse WHERE schuelerin.klasse_id = klasse.id AND klasse.name = '5b'";
@@ -190,7 +190,7 @@ Window {
                         aufgabe: "k) Bestimme den Notendurchschnitt der unter i) genannten Ex."}
                 }
 
-                textRole: "name"
+                textRole: "aufgabe"
 
                 onCurrentIndexChanged: {
                     query_input.text = aufgabenSelectorModel.get(currentIndex).query
